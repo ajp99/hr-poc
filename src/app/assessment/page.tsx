@@ -89,7 +89,7 @@ export default function AssessmentPage() {
                   return (
                     <label
                       key={o.id}
-                      className={`flex cursor-pointer items-center gap-6 rounded-xl border-2 px-7 py-6 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand ${
+                      className={`relative flex cursor-pointer items-center gap-6 rounded-xl border-2 px-7 py-6 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand ${
                         selected ? "border-brand bg-brand-soft" : "border-line hover:border-[#c9ccd6] hover:bg-[#fafbfc]"
                       }`}
                     >
@@ -99,7 +99,8 @@ export default function AssessmentPage() {
                         value={o.id}
                         checked={selected}
                         onChange={() => setAnswers((a) => ({ ...a, [q.id]: o.id }))}
-                        className="sr-only"
+                        // Sized to the label (not sr-only) so focusing it scrolls to the option itself, not a stray 1px box.
+                        className="absolute inset-0 size-full cursor-pointer opacity-0"
                       />
                       <span className={`w-4 text-[0.9375rem] font-semibold ${selected ? "text-brand" : "text-muted"}`}>{LETTERS[oi]}</span>
                       <span className={`text-[1.1875rem] leading-snug sm:text-[1.375rem] ${selected ? "font-medium text-ink" : "text-body"}`}>{o.text}</span>
