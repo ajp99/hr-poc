@@ -37,7 +37,7 @@ export const moduleMeta = {
   docId: "TSS-HR-004",
   classification: "Internal",
   version: "v1.0",
-  logoSrc: "/truminds-logo.svg",
+  logoSrc: "/truminds-logo.webp",
   passMark: 0.8,
   certificatePrefix: "TSS-COC",
   signatory: {
