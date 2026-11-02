@@ -8,6 +8,7 @@ import { moduleMeta, messages } from "@/content/module";
 import { notify } from "@/lib/notify";
 import { getSteps, progressPercent, type Step, type StepId } from "@/lib/steps";
 import { useStore, type LearnerProgress } from "@/lib/store";
+import { DevBar } from "./dev-bar";
 import { Logo } from "./ui";
 
 interface Props {
@@ -135,7 +136,9 @@ export function LearnerShell({ active, guard, footer, children }: Props) {
   );
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-white">
+    <div className="flex h-dvh flex-col overflow-hidden">
+    <DevBar />
+    <div className="flex min-h-0 flex-1 overflow-hidden bg-white">
       {/* Desktop sidebar */}
       <aside className="hidden w-[400px] shrink-0 border-r border-line lg:block xl:w-[445px]">{sidebar}</aside>
 
@@ -197,6 +200,7 @@ export function LearnerShell({ active, guard, footer, children }: Props) {
           </footer>
         )}
       </div>
+    </div>
     </div>
   );
 }
