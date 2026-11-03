@@ -47,6 +47,25 @@ export function VideoPlayer({ chapterId, src, onComplete }: Props) {
     if (v && v.error) setMissing(true);
   }, [reloadKey]);
 
+  // No background playback: pause when the tab is hidden, the window loses focus, or the page is left.
+  // Playback is never resumed automatically — the user presses play again.
+  useEffect(() => {
+    const v = ref.current;
+    const pause = () => ref.current?.pause();
+    const onVisibility = () => {
+      if (document.hidden) pause();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("blur", pause);
+    window.addEventListener("pagehide", pause);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("blur", pause);
+      window.removeEventListener("pagehide", pause);
+      v?.pause();
+    };
+  }, [reloadKey]);
+
   // Save the resume point when leaving the page.
   useEffect(() => {
     const v = ref.current;
