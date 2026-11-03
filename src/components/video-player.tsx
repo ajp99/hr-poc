@@ -19,7 +19,7 @@ const SEEK_TOLERANCE = 1;
 export function VideoPlayer({ chapterId, src, onComplete }: Props) {
   const ref = useRef<HTMLVideoElement>(null);
   const demo = useStore((s) => s.demo);
-  const completed = useStore((s) => !!s.progress.chapters[chapterId]?.completed);
+  const completed = useStore((s) => !!s.progress.chapters[chapterId]?.videoDone);
   const updateVideo = useStore((s) => s.updateVideo);
   const addMilestone = useStore((s) => s.addMilestone);
 

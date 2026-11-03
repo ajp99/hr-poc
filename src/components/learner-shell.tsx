@@ -62,7 +62,7 @@ export function LearnerShell({ active, guard, footer, children }: Props) {
   const activeStep = steps.find((s) => s.id === active);
   const statusLine = activeStep
     ? activeStep.id.startsWith("chapter")
-      ? `Chapter ${activeStep.number} of 04`
+      ? `Chapter ${activeStep.number.slice(0, 2)} of 04`
       : activeStep.label
     : "Welcome";
 
@@ -211,11 +211,11 @@ function SidebarItem({ step, active, onLocked }: { step: Step; active: boolean; 
   const content = (
     <>
       <span
-        className={`w-7 shrink-0 text-[0.9375rem] font-semibold tabular-nums ${active ? "text-brand" : "text-[#8d919c]"}`}
+        className={`${step.sub ? "w-10" : "w-7"} shrink-0 text-[0.9375rem] font-semibold tabular-nums ${active ? "text-brand" : "text-[#8d919c]"}`}
       >
         {step.number}
       </span>
-      <span className={`flex-1 text-[1.05rem] leading-snug ${active ? "font-semibold text-ink" : locked ? "text-[#8d919c]" : "text-body"}`}>
+      <span className={`flex-1 ${step.sub ? "text-[0.975rem]" : "text-[1.05rem]"} leading-snug ${active ? "font-semibold text-ink" : locked ? "text-[#8d919c]" : "text-body"}`}>
         {step.label}
       </span>
       {done ? (
@@ -225,7 +225,7 @@ function SidebarItem({ step, active, onLocked }: { step: Step; active: boolean; 
       ) : null}
     </>
   );
-  const cls = `flex w-full items-center gap-4 rounded-xl px-5 py-4 text-left transition-colors ${
+  const cls = `flex w-full items-center gap-4 rounded-xl py-4 pr-5 text-left transition-colors ${step.sub ? "ml-8 pl-4 !py-3" : "pl-5"} ${
     active ? "bg-brand-soft" : locked ? "hover:bg-[#f7f8fa]" : "hover:bg-[#f5f6f9]"
   }`;
 
