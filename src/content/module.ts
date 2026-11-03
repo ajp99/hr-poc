@@ -20,6 +20,8 @@ export interface Chapter {
   /** Path under /public. For the POC every chapter reuses one video. */
   videoSrc: string;
   blocks: ChapterBlock[];
+  /** Check-in questions shown after the video; all must be answered correctly to complete the chapter. */
+  checks: Question[];
 }
 
 export interface Question {
@@ -58,7 +60,7 @@ export const instructions = {
       items: [
         "There are four chapters. Each chapter starts with a short video, followed by the full text of that section of the Code.",
         "Watch each video to the end. You can pause and rewind, but you cannot skip ahead on your first viewing.",
-        "When a video finishes, the next chapter unlocks automatically. Your place in each video is saved if you leave and come back.",
+        "When a video finishes, three short questions unlock. Answer them all correctly to unlock the next chapter. Your place in each video is saved if you leave and come back.",
         "Chapters you have completed stay open — you can return to them, rewatch the video and re-read the text at any time.",
       ],
     },
@@ -137,6 +139,44 @@ export const chapters: Chapter[] = [
         text: "If you face a situation the Code does not address, ask yourself: Is it legal? Is it consistent with the Code and our policies? Would I be comfortable if it were reported publicly? If the answer to any of these is no — or you are not sure — stop and ask your manager or HR before acting.",
       },
     ],
+    checks: [
+      {
+        id: "c1-1",
+        prompt: "Who does the Truminds Code of Conduct apply to?",
+        options: [
+            { id: "a", text: "Permanent employees only" },
+            { id: "b", text: "Only people at manager level and above" },
+            { id: "c", text: "Employees, interns, trainees, contractors and anyone representing Truminds" },
+            { id: "d", text: "Only staff who deal directly with clients" },
+        ],
+        correctOptionId: "c",
+        explanation: "The Code applies to all employees at every level and location, to interns, trainees, contractors and consultants, and to anyone representing Truminds.",
+      },
+      {
+        id: "c1-2",
+        prompt: "Local law sets a lower standard than the Code. What applies?",
+        options: [
+            { id: "a", text: "The local law, because it is lower" },
+            { id: "b", text: "The Code, because its ethical standards prevail where laws are less stringent" },
+            { id: "c", text: "Whichever the project team prefers" },
+            { id: "d", text: "Neither, until HR decides" },
+        ],
+        correctOptionId: "b",
+        explanation: "You must always comply with the law, but where it sets a lower bar than the Code, the Code's higher ethical standard applies.",
+      },
+      {
+        id: "c1-3",
+        prompt: "Which question is part of the judgement test for situations the Code does not cover?",
+        options: [
+            { id: "a", text: "Will this save the company money?" },
+            { id: "b", text: "Is this what most colleagues would do?" },
+            { id: "c", text: "Would I be comfortable if it were reported publicly?" },
+            { id: "d", text: "Can I avoid being noticed?" },
+        ],
+        correctOptionId: "c",
+        explanation: "Ask whether it is legal, consistent with the Code, and something you would be comfortable seeing reported publicly. If unsure, stop and ask before acting.",
+      },
+    ],
   },
   {
     id: 2,
@@ -183,6 +223,44 @@ export const chapters: Chapter[] = [
         text: "Every employee is required to complete this module and acknowledge the Code when they join and whenever the Code is materially updated. Completion is recorded by HR.",
       },
     ],
+    checks: [
+      {
+        id: "c2-1",
+        prompt: "Which of these is expected of every employee?",
+        options: [
+            { id: "a", text: "Raise concerns promptly when you see behaviour that may breach the Code" },
+            { id: "b", text: "Wait for HR to notice problems" },
+            { id: "c", text: "Investigate suspected breaches privately" },
+            { id: "d", text: "Share concerns only with clients" },
+        ],
+        correctOptionId: "a",
+        explanation: "Every employee is expected to raise concerns promptly and to cooperate fully and honestly with any internal review.",
+      },
+      {
+        id: "c2-2",
+        prompt: "What extra duty do Heads of Department and above have?",
+        options: [
+            { id: "a", text: "Approve exceptions to the Code for their team" },
+            { id: "b", text: "Handle all concerns without involving HR" },
+            { id: "c", text: "Be role models and encourage others to follow the Code" },
+            { id: "d", text: "They have no extra duties" },
+        ],
+        correctOptionId: "c",
+        explanation: "Leaders drive a culture of integrity, act as role models and make sure their teams complete Code of Conduct training on time.",
+      },
+      {
+        id: "c2-3",
+        prompt: "Someone raises a concern in good faith. How must Truminds treat the person who raised it?",
+        options: [
+            { id: "a", text: "Keep it confidential where possible and never retaliate" },
+            { id: "b", text: "Share their name with the whole team" },
+            { id: "c", text: "Ask them to withdraw the concern" },
+            { id: "d", text: "Move them to a different team" },
+        ],
+        correctOptionId: "a",
+        explanation: "Good-faith concerns are treated confidentially to the extent possible, and Truminds does not tolerate retaliation of any kind.",
+      },
+    ],
   },
   {
     id: 3,
@@ -223,6 +301,44 @@ export const chapters: Chapter[] = [
         kind: "callout",
         title: "If it happens to you or someone else",
         text: "You do not have to handle it alone. Report it to your manager, HR, or the Internal Committee. Every report is taken seriously and handled confidentially.",
+      },
+    ],
+    checks: [
+      {
+        id: "c3-1",
+        prompt: "On what basis are decisions about hiring, pay and promotion made?",
+        options: [
+            { id: "a", text: "Seniority and personal relationships" },
+            { id: "b", text: "Merit, skills and performance" },
+            { id: "c", text: "Who the manager prefers" },
+            { id: "d", text: "Age and years in the company" },
+        ],
+        correctOptionId: "b",
+        explanation: "Employment decisions are made on merit, skills and performance, without discrimination on any protected characteristic.",
+      },
+      {
+        id: "c3-2",
+        prompt: "Which of these counts as harassment?",
+        options: [
+            { id: "a", text: "Giving a colleague constructive feedback in a review" },
+            { id: "b", text: "Sharing offensive memes on a work channel" },
+            { id: "c", text: "Disagreeing with a colleague in a meeting" },
+            { id: "d", text: "Declining a meeting invitation" },
+        ],
+        correctOptionId: "b",
+        explanation: "Harassment can be verbal, physical, visual or online. Sharing offensive images or memes on work channels is not acceptable.",
+      },
+      {
+        id: "c3-3",
+        prompt: "Where do the respect and dignity standards apply?",
+        options: [
+            { id: "a", text: "Only inside the office" },
+            { id: "b", text: "Only during working hours" },
+            { id: "c", text: "Only when a manager is present" },
+            { id: "d", text: "Wherever you represent Truminds, including client sites, events, travel and online platforms" },
+        ],
+        correctOptionId: "d",
+        explanation: "These standards go beyond the office to client sites, team events, work travel, and social media and messaging when dealing with colleagues or clients.",
       },
     ],
   },
@@ -266,6 +382,44 @@ export const chapters: Chapter[] = [
         kind: "callout",
         title: "Violence is never acceptable",
         text: "Threats, violence or carrying weapons on company premises or at company events are strictly prohibited and will result in disciplinary action.",
+      },
+    ],
+    checks: [
+      {
+        id: "c4-1",
+        prompt: "When may alcohol be consumed in a work context?",
+        options: [
+            { id: "a", text: "Only at approved company events, and in moderation" },
+            { id: "b", text: "Any time after 5 pm" },
+            { id: "c", text: "During client calls if the client agrees" },
+            { id: "d", text: "Whenever a colleague offers" },
+        ],
+        correctOptionId: "a",
+        explanation: "Alcohol is only allowed at company events where it has been approved, and always in moderation. Working under the influence is prohibited.",
+      },
+      {
+        id: "c4-2",
+        prompt: "You spot a fire exit blocked by boxes. What should you do?",
+        options: [
+            { id: "a", text: "Leave it for the facilities team to find" },
+            { id: "b", text: "Report it immediately to the facilities team or HR" },
+            { id: "c", text: "Mention it at the next team meeting" },
+            { id: "d", text: "Ignore it if there is no fire drill planned" },
+        ],
+        correctOptionId: "b",
+        explanation: "Hazards, unsafe conditions, accidents and near-misses must be reported immediately.",
+      },
+      {
+        id: "c4-3",
+        prompt: "How does the Code treat threats, violence or weapons on company premises?",
+        options: [
+            { id: "a", text: "They are allowed with a manager's approval" },
+            { id: "b", text: "They are discouraged but tolerated" },
+            { id: "c", text: "They are only an issue if someone is hurt" },
+            { id: "d", text: "They are strictly prohibited and lead to disciplinary action" },
+        ],
+        correctOptionId: "d",
+        explanation: "Threats, violence or carrying weapons on company premises or at company events are strictly prohibited.",
       },
     ],
   },
@@ -352,6 +506,8 @@ export const messages = {
   videoHalf: (ch: number) => `Halfway through Chapter ${pad(ch)} — keep going`,
   videoAlmost: (ch: number) => `Almost done — Chapter ${pad(ch)} wraps up shortly`,
   skipBlocked: "Please watch the video fully before skipping ahead",
+  videoDone: (ch: number) => `Video complete — answer 3 questions to finish Chapter ${pad(ch)}`,
+  checkWrong: "Not quite — read the hint and try again",
   chapterComplete: (ch: number) => `Chapter ${pad(ch)} complete — Chapter ${pad(ch + 1)} unlocked`,
   modulesHalf: "You're halfway through the chapters",
   allChaptersDone: "All chapters complete — Assessment unlocked",

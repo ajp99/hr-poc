@@ -13,6 +13,9 @@ export interface Profile {
 }
 
 export interface ChapterProgress {
+  /** Video finished on first viewing (or demo skip). Unlocks the chapter's check-in questions. */
+  videoDone: boolean;
+  /** Video watched and check-in questions answered correctly. Unlocks the next chapter. */
   completed: boolean;
   completedAt: string | null;
   /** Furthest point reached on first viewing (seconds). Seeking beyond it is blocked until completed. */
@@ -56,6 +59,7 @@ interface State {
   acceptInstructions: () => void;
   updateVideo: (chapter: number, patch: Partial<Pick<ChapterProgress, "maxTime" | "position">>) => void;
   addMilestone: (chapter: number, milestone: number) => void;
+  completeVideo: (chapter: number) => void;
   completeChapter: (chapter: number) => void;
   recordAttempt: (attempt: Attempt) => void;
   attest: (fullName: string) => void;
@@ -63,6 +67,7 @@ interface State {
 }
 
 const emptyChapter = (): ChapterProgress => ({
+  videoDone: false,
   completed: false,
   completedAt: null,
   maxTime: 0,
@@ -149,6 +154,18 @@ export const useStore = create<State>()(
           };
         }),
 
+      completeVideo: (chapter) =>
+        set((s) => {
+          const cur = s.progress.chapters[chapter] ?? emptyChapter();
+          if (cur.videoDone) return s;
+          return {
+            progress: {
+              ...s.progress,
+              chapters: { ...s.progress.chapters, [chapter]: { ...cur, videoDone: true } },
+            },
+          };
+        }),
+
       completeChapter: (chapter) =>
         set((s) => {
           const cur = s.progress.chapters[chapter] ?? emptyChapter();
@@ -158,7 +175,7 @@ export const useStore = create<State>()(
               ...s.progress,
               chapters: {
                 ...s.progress.chapters,
-                [chapter]: { ...cur, completed: true, completedAt: now() },
+                [chapter]: { ...cur, videoDone: true, completed: true, completedAt: now() },
               },
             },
           };
@@ -189,7 +206,15 @@ export const useStore = create<State>()(
     }),
     {
       name: "truminds-coc-poc",
-      version: 1,
+      version: 2,
+      // v1 → v2: chapters gained `videoDone`; a chapter completed under v1 had finished its video.
+      migrate: (persisted, version) => {
+        const state = persisted as { progress?: LearnerProgress };
+        if (version < 2 && state.progress?.chapters) {
+          for (const c of Object.values(state.progress.chapters)) c.videoDone = c.videoDone ?? c.completed;
+        }
+        return state as unknown as State;
+      },
       storage: createJSONStorage(() => localStorage),
       // Rehydrated after mount by <StoreHydrator/> so the first client render matches the static HTML.
       skipHydration: true,

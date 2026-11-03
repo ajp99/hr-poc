@@ -7,9 +7,11 @@ import { useStore } from "@/lib/store";
 export function DevBar() {
   const router = useRouter();
   const pathname = usePathname();
+  const completeVideo = useStore((s) => s.completeVideo);
   const completeChapter = useStore((s) => s.completeChapter);
   const resetDemo = useStore((s) => s.resetDemo);
-  const chapterId = Number(/^\/chapter\/(\d+)\/?$/.exec(pathname)?.[1]) || null;
+  const chapterId = Number(/^\/chapter\/(\d+)\/(?:check\/)?$/.exec(pathname)?.[1]) || null;
+  const videoDone = useStore((s) => (chapterId ? !!s.progress.chapters[chapterId]?.videoDone : false));
   const done = useStore((s) => (chapterId ? !!s.progress.chapters[chapterId]?.completed : false));
 
   const btn =
@@ -21,11 +23,20 @@ export function DevBar() {
       <button
         type="button"
         className={btn}
+        disabled={!chapterId || videoDone}
+        title={chapterId ? (videoDone ? "Video already complete" : "Mark this video complete") : "Open a chapter page"}
+        onClick={() => chapterId && completeVideo(chapterId)}
+      >
+        Skip video
+      </button>
+      <button
+        type="button"
+        className={btn}
         disabled={!chapterId || done}
         title={chapterId ? (done ? "Chapter already complete" : "Mark this chapter complete") : "Open a chapter page"}
         onClick={() => chapterId && completeChapter(chapterId)}
       >
-        Skip video
+        Skip questions
       </button>
       <button
         type="button"

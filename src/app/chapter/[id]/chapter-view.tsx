@@ -7,7 +7,6 @@ import { FooterBar, LearnerShell, PageHeading } from "@/components/learner-shell
 import { Button, ButtonLink } from "@/components/ui";
 import { VideoPlayer } from "@/components/video-player";
 import { notify } from "@/lib/notify";
-import { chaptersDone } from "@/lib/steps";
 import { useStore } from "@/lib/store";
 
 export function ChapterView({ chapterId }: { chapterId: number }) {
@@ -16,21 +15,17 @@ export function ChapterView({ chapterId }: { chapterId: number }) {
   const chapter = chapters[index];
   const isLast = index === chapters.length - 1;
   const completed = useStore((s) => !!s.progress.chapters[chapterId]?.completed);
-  const completeChapter = useStore((s) => s.completeChapter);
+  const videoDone = useStore((s) => !!s.progress.chapters[chapterId]?.videoDone);
+  const completeVideo = useStore((s) => s.completeVideo);
 
+  const checkHref = `/chapter/${chapterId}/check/`;
   const prevHref = index === 0 ? "/instructions/" : `/chapter/${chapters[index - 1].id}/`;
   const nextHref = isLast ? "/assessment/" : `/chapter/${chapters[index + 1].id}/`;
 
   function handleComplete() {
-    if (useStore.getState().progress.chapters[chapterId]?.completed) return;
-    completeChapter(chapterId);
-    const done = chaptersDone(useStore.getState().progress);
-    if (isLast || done === chapters.length) {
-      notify.success(messages.allChaptersDone);
-    } else {
-      notify.success(messages.chapterComplete(chapterId));
-      if (done === Math.ceil(chapters.length / 2)) notify.info(messages.modulesHalf);
-    }
+    if (useStore.getState().progress.chapters[chapterId]?.videoDone) return;
+    completeVideo(chapterId);
+    notify.success(messages.videoDone(chapterId));
     notify.saved();
   }
 
@@ -44,12 +39,25 @@ export function ChapterView({ chapterId }: { chapterId: number }) {
       footer={
         <FooterBar
           back={<ButtonLink href={prevHref} variant="secondary">Back</ButtonLink>}
-          status={completed ? `Chapter ${pad(chapterId)} complete` : `Chapter ${pad(chapterId)} of ${pad(chapters.length)} · watch the video to continue`}
+          status={
+            completed
+              ? `Chapter ${pad(chapterId)} complete`
+              : videoDone
+                ? `Chapter ${pad(chapterId)} of ${pad(chapters.length)} · answer the questions to continue`
+                : `Chapter ${pad(chapterId)} of ${pad(chapters.length)} · watch the video to continue`
+          }
           action={
-            <Button onClick={() => router.push(nextHref)} disabled={!completed}>
-              {isLast ? "Final assessment" : "Next chapter"}
-              <ArrowRight className="size-4" />
-            </Button>
+            completed ? (
+              <Button onClick={() => router.push(nextHref)}>
+                {isLast ? "Final assessment" : "Next chapter"}
+                <ArrowRight className="size-4" />
+              </Button>
+            ) : (
+              <Button onClick={() => router.push(checkHref)} disabled={!videoDone}>
+                Check your understanding
+                <ArrowRight className="size-4" />
+              </Button>
+            )
           }
         />
       }

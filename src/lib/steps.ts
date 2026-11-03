@@ -1,7 +1,7 @@
 import { chapters, moduleMeta, pad } from "@/content/module";
 import type { LearnerProgress } from "./store";
 
-export type StepId = "instructions" | `chapter-${number}` | "assessment" | "attestation" | "certificate";
+export type StepId = "instructions" | `chapter-${number}` | `chapter-${number}-check` | "assessment" | "attestation" | "certificate";
 export type StepStatus = "locked" | "available" | "completed";
 
 export interface Step {
@@ -14,6 +14,8 @@ export interface Step {
   requirement: string;
   /** Counts toward the progress bar. */
   counts: boolean;
+  /** Sub-step of a chapter, rendered indented in the sidebar. */
+  sub?: boolean;
 }
 
 export function chaptersDone(p: LearnerProgress) {
@@ -45,6 +47,17 @@ export function getSteps(p: LearnerProgress): Step[] {
       status: done ? "completed" : prevDone ? "available" : "locked",
       requirement: i === 0 ? "the Instructions" : `Chapter ${pad(chapters[i - 1].id)}`,
       counts: true,
+    });
+    const videoDone = !!p.chapters[c.id]?.videoDone;
+    steps.push({
+      id: `chapter-${c.id}-check`,
+      number: `${pad(c.id)}.1`,
+      label: "Check your understanding",
+      href: `/chapter/${c.id}/check/`,
+      status: done ? "completed" : videoDone ? "available" : "locked",
+      requirement: `the Chapter ${pad(c.id)} video`,
+      counts: false,
+      sub: true,
     });
   });
 
@@ -91,7 +104,12 @@ export function progressPercent(p: LearnerProgress) {
 /** Where "Resume" should take the learner: the first step that is available but not done. */
 export function resumeHref(p: LearnerProgress) {
   const steps = getSteps(p);
-  const next = steps.find((s) => s.status === "available");
+  // A chapter whose video is done but whose questions aren't resumes at the questions, not the video.
+  const next = steps.find((s) => {
+    if (s.status !== "available") return false;
+    const m = /^chapter-(\d+)$/.exec(s.id);
+    return !(m && p.chapters[Number(m[1])]?.videoDone);
+  });
   if (next) return next.href;
   return p.certificateId ? "/certificate/" : "/instructions/";
 }
